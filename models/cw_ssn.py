@@ -620,9 +620,10 @@ class Downsample2d(nn.Module):
         self.conv = nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=2, padding=1, bias=False)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        return F.conv2d(
-            x.float(), self.conv.weight.float(), None, stride=2, padding=1
-        ).to(x.dtype)
+        with torch.cuda.amp.autocast(enabled=False):
+            return F.conv2d(
+                x.float(), self.conv.weight.float(), None, stride=2, padding=1
+            ).to(x.dtype)
 
 
 class Upsample2d(nn.Module):
@@ -723,12 +724,13 @@ class CWSSN(nn.Module):
         first-order spatial mean mu, second-order standard deviation sigma, and directional
         variation) from the bottleneck stage for t-SNE manifold visualization (Notebook NB_09).
         """
-        f0 = F.conv2d(
-            x.float(),
-            self.patch_embed.weight.float(),
-            self.patch_embed.bias.float() if self.patch_embed.bias is not None else None,
-            padding=1,
-        ).to(x.dtype)
+        with torch.cuda.amp.autocast(enabled=False):
+            f0 = F.conv2d(
+                x.float(),
+                self.patch_embed.weight.float(),
+                self.patch_embed.bias.float() if self.patch_embed.bias is not None else None,
+                padding=1,
+            ).to(x.dtype)
         e1 = self.enc1(f0)
         e2 = self.enc2(self.down1(e1))
         e3 = self.enc3(self.down2(e2))
@@ -751,28 +753,35 @@ class CWSSN(nn.Module):
         else:
             x_in = x
 
-        f0 = F.conv2d(
-            x_in.float(),
-            self.patch_embed.weight.float(),
-            self.patch_embed.bias.float() if self.patch_embed.bias is not None else None,
-            padding=1,
-        ).to(x_in.dtype)
-        e1 = self.enc1(f0)
+        with torch.cuda.amp.autocast(enabled=False):
+            e1 = F.conv2d(
+                x_in.float(),
+                self.patch_embed.weight.float(),
+                self.patch_embed.bias.float() if self.patch_embed.bias is not None else None,
+                padding=1,
+            ).to(x_in.dtype)
+        e1 = self.enc1(e1)
         e2 = self.enc2(self.down1(e1))
         e3 = self.enc3(self.down2(e2))
         b = self.latent(self.down3(e3))
 
         d3 = self.dec3(self.reduce3(torch.cat([self.up3(b), e3], dim=1)))
+        del b, e3
         d2 = self.dec2(self.reduce2(torch.cat([self.up2(d3), e2], dim=1)))
+        del d3, e2
         d1 = self.dec1(self.reduce1(torch.cat([self.up1(d2), e1], dim=1)))
+        del d2, e1
 
         ref = self.refinement(d1)
-        out_res = F.conv2d(
-            ref.float(),
-            self.output_proj.weight.float(),
-            self.output_proj.bias.float() if self.output_proj.bias is not None else None,
-            padding=1,
-        ).to(x_in.dtype)
+        del d1
+        with torch.cuda.amp.autocast(enabled=False):
+            out_res = F.conv2d(
+                ref.float(),
+                self.output_proj.weight.float(),
+                self.output_proj.bias.float() if self.output_proj.bias is not None else None,
+                padding=1,
+            ).to(x_in.dtype)
+        del ref
         out = out_res + x_in
         return out[:, :, :H, :W]
 

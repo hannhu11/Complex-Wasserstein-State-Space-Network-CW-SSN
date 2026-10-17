@@ -523,8 +523,11 @@ assert not torch.isnan(y_train).any().item() and not torch.isinf(y_train).any().
 assert not torch.isnan(x_train.grad).any().item()
 assert peak_vram_train_gb < 10.5, f"Peak training VRAM {peak_vram_train_gb:.2f} GB exceeded 10.5 GB gate!"
 
+del x_train, y_train, loss
+model_tiny.zero_grad(set_to_none=True)
 model_tiny.eval()
 if torch.cuda.is_available():
+    torch.cuda.empty_cache()
     torch.cuda.reset_peak_memory_stats()
 x_highres = torch.randn(1, 3, 512, 512, device=DEVICE)
 t0 = time.perf_counter()

@@ -227,7 +227,10 @@ class TestCWSSNArchitectureAndMath(unittest.TestCase):
         self.assertFalse(torch.isnan(x_train.grad).any().item())
         self.assertLess(peak_train_gb, 10.5, f"Peak training VRAM {peak_train_gb:.2f} GB >= 10.5 GB gate")
 
+        del x_train, y_train, loss
+        model.zero_grad(set_to_none=True)
         model.eval()
+        torch.cuda.empty_cache()
         torch.cuda.reset_peak_memory_stats(device)
         x_512 = torch.randn(1, 3, 512, 512, device=device)
         with torch.no_grad(), torch.cuda.amp.autocast(dtype=torch.float16):
