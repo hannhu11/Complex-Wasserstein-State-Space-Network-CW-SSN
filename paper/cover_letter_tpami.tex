@@ -1,0 +1,48 @@
+% ==============================================================================
+% Cover Letter for IEEE TPAMI Regular Paper Submission (ScholarOne Manuscripts)
+% Complies with all 4 Editorial Gatekeeping Criteria
+% ==============================================================================
+\documentclass[11pt]{letter}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+
+\begin{document}
+
+\begin{letter}{Editor-in-Chief and Associate Editors\\
+\textbf{IEEE Transactions on Pattern Analysis and Machine Intelligence (TPAMI)}}
+
+\opening{Dear Editor-in-Chief and Associate Editors,}
+
+% GATE 1: Explicit Positioning for IEEE TPAMI vs. IEEE TIP in the first two sentences
+We are pleased to submit our regular paper manuscript entitled \textbf{``Complex Wasserstein State-Space Network: Geodesic-Modulated Rotational Dynamics for Unified Visual Restoration and Foreground Pattern Analysis''} for consideration for publication in \emph{IEEE Transactions on Pattern Analysis and Machine Intelligence (TPAMI)}. Rather than proposing a task-specific image processing pipeline suited for \emph{IEEE TIP}, this work introduces a foundational, mathematically rigorous visual representation operator---\textbf{Complex Wasserstein State-Space Operator (CW-SSO)}---backed by two white-box theoretical guarantees (Theorems 1 and 2) and validated across both unified multi-degradation visual restoration (3D/5D/10D All-in-One benchmarks) and four Universal Foreground Pattern Analysis tasks (Camouflaged Object, Defocus Blur, Image Forgery, and Shadow Detection).
+
+\vspace{0.5em}
+\textbf{Summary of Core Technical & Theoretical Contributions:}
+\begin{enumerate}
+    \item \textbf{Closed-Form Wasserstein Geodesic Discretization:} We reformulate the continuous-to-discrete transition step size $\tilde{\Delta}_t$ of selective state-space differential equations using the exact closed-form 2-Wasserstein distance $\mathcal{W}_2^2(\mathcal{P}_t, \mathcal{P}_{t-1})$ between local Gaussian neighborhoods, establishing an exponential upper bound on cross-region state contamination (Theorem 2).
+    \item \textbf{$2 \times 2$ Orthogonal Rotational Spectral State-Space:} We lift the state evolution matrix to the complex domain $A = -\Lambda + i\Omega$ and execute its discretized recurrence via an isomorphic real-valued $2 \times 2$ block-orthogonal parallel prefix scan in $O(\log_2 L)$ steps natively in FP16, conserving high-frequency phase energy (Theorem 1) without external FFT modules.
+    \item \textbf{Extreme Parameter Efficiency & Broad Pattern Analysis Generalization:} Stacking CW-SSO homogeneously yields \textbf{CW-SSN-T} (5.81M parameters, 88.4\% lighter than DA-RCOT~\emph{TPAMI 2025} at 50.1M) and \textbf{CWSSOAdapter} (0.99M parameters, only 1.61\% overhead on frozen SegFormer-B4 vs.\ EVP's 5.70\% on \emph{TPAMI 2025}), achieving state-of-the-art performance across 10 restoration degradations and 4 foreground segmentation benchmarks.
+\end{enumerate}
+
+% GATE 2: Regular Paper 14-page double-column formatting declaration
+\textbf{Manuscript Formatting:} The manuscript is formatted strictly in accordance with the \emph{IEEE Computer Society TPAMI} Regular Paper guidelines (\texttt{IEEEtran.cls}, 10pt, double-column, within the 14-page budget), with detailed proofs of supporting lemmas placed in the accompanying Supplementary Material.
+
+% GATE 3: 4 Independent Conflict-Free Expert Reviewers
+\vspace{0.5em}
+\textbf{Suggested Conflict-Free Reviewers:}
+\begin{enumerate}
+    \item \textbf{Prof.\ Jian Sun} (Xi'an Jiaotong University) --- Leading authority on Optimal Transport for Unified Image Restoration (Senior Author of DA-RCOT, \emph{IEEE TPAMI 2025}).
+    \item \textbf{Prof.\ Xi Peng} (Sichuan University) --- Leading authority on All-in-One Image Restoration and multi-task degradation representations (Senior Author of the AiOIR Survey, \emph{IEEE TPAMI 2025}).
+    \item \textbf{Prof.\ Radu Timofte} (ETH Zurich / University of W\"urzburg) --- World-renowned expert in efficient visual restoration architectures and Vision State-Space Models (MambaIR).
+    \item \textbf{Prof.\Dacheng Tao} (Nanyang Technological University) --- Distinguished expert in foundational representation learning, state-space theoretical analysis, and universal visual prompting.
+\end{enumerate}
+
+% GATE 4: Mandatory Originality & Author Consent Declarations
+\vspace{0.5em}
+\textbf{Mandatory Declarations:} We confirm that this manuscript is entirely original, has not been published previously, and is not currently under consideration for publication elsewhere. All authors have read and approved the manuscript and agree with its submission to \emph{IEEE TPAMI}. Full source code, unit tests, and one-click reproducibility scripts are publicly available at \url{https://github.com/hannhu11/Complex-Wasserstein-State-Space-Network-CW-SSN}.
+
+\closing{Sincerely,\\
+The Authors}
+
+\end{letter}
+\end{document}
