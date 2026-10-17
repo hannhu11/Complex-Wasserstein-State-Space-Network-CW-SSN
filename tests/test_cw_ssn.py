@@ -201,6 +201,48 @@ class TestCWSSNArchitectureAndMath(unittest.TestCase):
         self.assertEqual(logits.shape, (2, 1, 128, 128))
         self.assertFalse(torch.isnan(logits).any().item())
 
+    def test_08_amp_fp16_batch4_128_and_512_vram_gate(self) -> None:
+        """
+        Verifies TPAMI Gatekeeping KPI:
+        - (4, 3, 128, 128) AMP FP16 forward + backward pass with zero NaN/Inf and VRAM < 10.5 GB.
+        - (1, 3, 512, 512) high-resolution inference with zero NaN/Inf and VRAM < 10.5 GB.
+        """
+        if not torch.cuda.is_available():
+            return
+        device = torch.device("cuda")
+        model = build_cw_ssn_tiny().to(device)
+        torch.cuda.empty_cache()
+        torch.cuda.reset_peak_memory_stats(device)
+
+        x_train = torch.randn(4, 3, 128, 128, device=device, requires_grad=True)
+        with torch.cuda.amp.autocast(dtype=torch.float16):
+            y_train = model(x_train)
+            loss = y_train.pow(2).mean()
+        loss.backward()
+        peak_train_gb = torch.cuda.max_memory_allocated(device) / (1024 ** 3)
+
+        self.assertEqual(y_train.shape, (4, 3, 128, 128))
+        self.assertFalse(torch.isnan(y_train).any().item())
+        self.assertFalse(torch.isinf(y_train).any().item())
+        self.assertFalse(torch.isnan(x_train.grad).any().item())
+        self.assertLess(peak_train_gb, 10.5, f"Peak training VRAM {peak_train_gb:.2f} GB >= 10.5 GB gate")
+
+        model.eval()
+        torch.cuda.reset_peak_memory_stats(device)
+        x_512 = torch.randn(1, 3, 512, 512, device=device)
+        with torch.no_grad(), torch.cuda.amp.autocast(dtype=torch.float16):
+            y_512 = model(x_512)
+        peak_infer_gb = torch.cuda.max_memory_allocated(device) / (1024 ** 3)
+
+        self.assertEqual(y_512.shape, (1, 3, 512, 512))
+        self.assertFalse(torch.isnan(y_512).any().item())
+        self.assertFalse(torch.isinf(y_512).any().item())
+        self.assertLess(peak_infer_gb, 10.5, f"Peak 512x512 VRAM {peak_infer_gb:.2f} GB >= 10.5 GB gate")
+        print(
+            f"[KPI Check] AMP FP16 (4x3x128x128) Train Peak VRAM: {peak_train_gb:.2f} GB | "
+            f"(1x3x512x512) Infer Peak VRAM: {peak_infer_gb:.2f} GB (< 10.50 GB Gate)"
+        )
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

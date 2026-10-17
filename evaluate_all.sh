@@ -6,10 +6,25 @@
 # ==============================================================================
 set -euo pipefail
 
+PYTHON_BIN=""
+for cand in python python3 python.exe "/mnt/c/Users/ADMIN/AppData/Local/Programs/Python/Python310/python.exe" "/c/Users/ADMIN/AppData/Local/Programs/Python/Python310/python.exe"; do
+    if command -v "$cand" >/dev/null 2>&1 || [ -x "$cand" ]; then
+        if "$cand" -c "import torch" >/dev/null 2>&1; then
+            PYTHON_BIN="$cand"
+            break
+        fi
+    fi
+done
+
+if [ -z "$PYTHON_BIN" ]; then
+    echo "ERROR: Python interpreter with PyTorch not found." >&2
+    exit 1
+fi
+
 echo "======================================================================"
 echo "[1/4] Verifying Python & PyTorch Hardware Environment..."
 echo "======================================================================"
-python -c "
+"$PYTHON_BIN" -c "
 import torch
 print('PyTorch Version:', torch.__version__)
 print('CUDA Available: ', torch.cuda.is_available())
@@ -23,17 +38,17 @@ if torch.cuda.is_available():
 echo "======================================================================"
 echo "[2/4] Running Mathematical & Unit Test Suite (Theorems 1-2 & KPIs)..."
 echo "======================================================================"
-python tests/test_cw_ssn.py
+"$PYTHON_BIN" tests/test_cw_ssn.py
 
 echo "======================================================================"
 echo "[3/4] Auditing 15-Column 25-Paper Pre-Research Reference Database..."
 echo "======================================================================"
-python scripts/generate_references_csv.py
+"$PYTHON_BIN" scripts/generate_references_csv.py
 
 echo "======================================================================"
 echo "[4/4] Running Synthetic Benchmark & Latency Verification..."
 echo "======================================================================"
-python -c "
+"$PYTHON_BIN" -c "
 import time, torch
 from models.cw_ssn import build_cw_ssn_tiny, build_cw_ssn_base, CWSSOAdapter
 

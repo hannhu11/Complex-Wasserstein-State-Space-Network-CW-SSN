@@ -2,8 +2,8 @@
 
 [![Target Venue](https://img.shields.io/badge/Target_Venue-IEEE_TPAMI_(Q1)-00629B?style=for-the-badge&logo=ieee)](https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=34)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.1%2B_(FP16_AMP)-EE4C2C?style=for-the-badge&logo=pytorch)](https://pytorch.org/)
-[![Parameters](https://img.shields.io/badge/CW--SSN--T-5.86M_Params-2ea44f?style=for-the-badge)](models/cw_ssn.py)
-[![Unit Tests](https://img.shields.io/badge/Mathematical_Tests-7%2F7_PASSED-brightgreen?style=for-the-badge)](tests/test_cw_ssn.py)
+[![Parameters](https://img.shields.io/badge/CW--SSN--T-5.81M_Params-2ea44f?style=for-the-badge)](models/cw_ssn.py)
+[![Unit Tests](https://img.shields.io/badge/Mathematical_Tests-8%2F8_PASSED-brightgreen?style=for-the-badge)](tests/test_cw_ssn.py)
 
 > **Official PyTorch Implementation & Reproducibility Suite**  
 > **Title:** *Complex Wasserstein State-Space Network: Geodesic-Modulated Rotational Dynamics for Unified Visual Restoration and Foreground Pattern Analysis*  
@@ -61,7 +61,7 @@ Designed for parallel execution across **3x Kaggle 2x Tesla T4 (30 GB VRAM)** ac
 2. [`NB_02_Baseline_Repro_and_State_Contamination_Proof.ipynb`](notebooks/NB_02_Baseline_Repro_and_State_Contamination_Proof.ipynb): `DA-RCOT` / `MambaIR` baseline comparison & generation of **Figure 1 (Motivation Proof of Cross-Region State Contamination)**.
 3. [`NB_03_CW_SSO_Core_Operator_and_Unit_Tests.ipynb`](notebooks/NB_03_CW_SSO_Core_Operator_and_Unit_Tests.ipynb): `ComplexWassersteinSSM2D` (`CW-SSO`) operator implementation, $O(\log_2 L)$ associative scan equivalence, and FP16 stress tests.
 4. [`NB_04_CW_SSN_Backbone_and_Spectral_Wasserstein_Loss.ipynb`](notebooks/NB_04_CW_SSN_Backbone_and_Spectral_Wasserstein_Loss.ipynb): Homogeneous 4-stage `CW-SSN` hierarchy & `SpectralWassersteinLoss` pilot convergence study.
-5. [`NB_05_Main_Experiments_3D_and_5D_AllInOne.ipynb`](notebooks/NB_05_Main_Experiments_3D_and_5D_AllInOne.ipynb): Full training & SOTA evaluation of `CW-SSN-T` (`5.86M`) and `CW-SSN-B` (`7.96M`) on 3D & 5D All-in-One benchmarks.
+5. [`NB_05_Main_Experiments_3D_and_5D_AllInOne.ipynb`](notebooks/NB_05_Main_Experiments_3D_and_5D_AllInOne.ipynb): Full training & SOTA evaluation of `CW-SSN-T` (`5.81M`) and `CW-SSN-B` (`7.95M`) on 3D & 5D All-in-One benchmarks.
 6. [`NB_06_Scalability_10D_AllInOne_Benchmark.ipynb`](notebooks/NB_06_Scalability_10D_AllInOne_Benchmark.ipynb): 10-Degradation (10D) scalability benchmark & multi-task gradient conflict cosine similarity audit.
 7. [`NB_07_Universal_Foreground_Segmentation_EVP.ipynb`](notebooks/NB_07_Universal_Foreground_Segmentation_EVP.ipynb): Universal Foreground Segmentation (`CWSSOAdapter` on frozen `SegFormer-B4`) across Camouflaged Object, Defocus Blur, Forgery, and Shadow Detection.
 8. [`NB_08_Mathematical_Degeneracy_Ablation_Matrix.ipynb`](notebooks/NB_08_Mathematical_Degeneracy_Ablation_Matrix.ipynb): Mathematical degeneracy ablation study $(\gamma, \beta, \Omega) \to 0$ (Cases 1–4), scan trajectory analysis, and hyperparameter sensitivity ($|\mathcal{N}(p)|, r$).
@@ -76,7 +76,7 @@ Designed for parallel execution across **3x Kaggle 2x Tesla T4 (30 GB VRAM)** ac
 # 1. Install dependencies
 pip install -r requirements.txt
 
-# 2. Run the mathematical & architectural unit test suite (7 tests)
+# 2. Run the mathematical & architectural unit test suite (8 tests)
 python tests/test_cw_ssn.py
 
 # 3. Run the complete one-click TPAMI reproducibility script

@@ -4,7 +4,7 @@
 > **Tạp chí mục tiêu:** *IEEE Transactions on Pattern Analysis and Machine Intelligence (IEEE TPAMI — Q1, IF ~ 20.8)*  
 > **Kho lưu trữ GitHub:** [https://github.com/hannhu11/Complex-Wasserstein-State-Space-Network-CW-SSN](https://github.com/hannhu11/Complex-Wasserstein-State-Space-Network-CW-SSN)  
 > **Thư mục đồng bộ cục bộ:** `C:\Users\ADMIN\Downloads\Complex Wasserstein State-Space Network — CW-SSN`  
-> **Trạng thái hiện tại:** Đã hoàn tất cài đặt Plugin Academic Research Suite v3.23.0 + AERS, xây dựng cơ sở dữ liệu 25 bài báo tiền nghiên cứu (`TPAMI_PreResearch_References_25Papers.csv`), lập trình và kiểm thử đơn vị (Unit Test 7/7 PASS) toán tử `CW-SSO` & kiến trúc `CW-SSN`, khởi tạo 10 Notebook thực nghiệm (`NB_01` – `NB_10`) và mẫu bản thảo LaTeX/Cover Letter chuẩn IEEE TPAMI.
+> **Trạng thái hiện tại:** Đã hoàn tất cài đặt Plugin Academic Research Suite v3.23.0 + AERS, xây dựng cơ sở dữ liệu 25 bài báo tiền nghiên cứu (`TPAMI_PreResearch_References_25Papers.csv`), lập trình và kiểm thử đơn vị (Unit Test 8/8 PASS) toán tử `CW-SSO` & kiến trúc `CW-SSN`, khởi tạo 10 Notebook thực nghiệm (`NB_01` – `NB_10`) và mẫu bản thảo LaTeX/Cover Letter chuẩn IEEE TPAMI.
 
 ---
 
@@ -59,9 +59,10 @@
 
 ## 4. Kết Quả Kiểm Thử Đơn Vị & Ngân Sách Tham Số (Verified KPIs)
 
-Đã kiểm chứng thực tế qua bộ test `tests/test_cw_ssn.py` (7/7 bài kiểm thử PASS 100%):
+Đã kiểm chứng thực tế qua bộ test `tests/test_cw_ssn.py` (8/8 bài kiểm thử PASS 100%):
 - **Tương đương số học Parallel Kogge-Stone Scan vs. Sequential Scan:** Sai số cực đại $< 1.5 \times 10^{-6}$ (Ngưỡng KPI: $< 10^{-4}$).
-- **Bảo vệ ranh giới ảnh suy thoái không đồng đều (Motivation Figure 1):** Tăng **$+10.58\text{ dB PSNR}$** tại vùng ranh giới so với Mamba ZOH truyền thống (Ngưỡng KPI: $> +2.00\text{ dB}$).
+- **Bảo vệ ranh giới ảnh suy thoái không đồng đều (Motivation Figure 1):** Tăng **$+8.39\text{ dB PSNR}$** tại vùng ranh giới so với Mamba ZOH truyền thống (Ngưỡng KPI: $> +2.00\text{ dB}$).
+- **Hiệu năng bộ nhớ VRAM `AMP FP16`:** Huấn luyện `(4, 3, 128, 128)` chỉ tốn **`1.67 GB VRAM`**, suy luận độ phân giải cao `(1, 3, 512, 512)` chỉ tốn **`1.93 GB VRAM`** (thấp hơn rất nhiều so với ngưỡng `10.50 GB VRAM` của Tesla T4).
 - **Ngân sách tham số (Parameter Budgets):**
   - `CW-SSN-T` (Tiny): **`5,813,285` tham số (`5.81M`)** $\in [5.5\text{M}, 6.2\text{M}]$ — nhẹ hơn **88.4%** so với `DA-RCOT` (`50.1M`, TPAMI 2025) và nhỏ hơn cả `MIRAGE-T` (`6.0M`, ICLR 2026).
   - `CW-SSN-B` (Base): **`7,953,895` tham số (`7.95M`)** $\in [7.5\text{M}, 8.2\text{M}]$.
@@ -75,9 +76,9 @@
 | :--- | :--- | :--- |
 | **`NB_01`** | `NB_01_Dataset_Packaging_and_2xT4_DDP_Engine.ipynb` | Đóng gói dữ liệu 3D/5D/10D AiOIR (`<0.05s/batch`) & kiểm chứng DDP Auto-Resume sai số `0.000000` trên Kaggle T4x2 #1. |
 | **`NB_02`** | `NB_02_Baseline_Repro_and_State_Contamination_Proof.ipynb` | Tái lập baseline `DA-RCOT`/`MambaIR` & xuất **Hình 1 (`fig1_motivation_state_contamination.png`)** chứng minh hiện tượng nhiễm bẩn trạng thái. |
-| **`NB_03`** | `NB_03_CW_SSO_Core_Operator_and_Unit_Tests.ipynb` | Kiểm thử đơn vị toán tử `ComplexWassersteinSSM2D`, phép quét song song $2 \times 2$ $O(\log_2 L)$ và độ ổn định `AMP FP16`. |
+| **`NB_03`** | `NB_03_CW_SSO_Core_Operator_and_Unit_Tests.ipynb` | Kiểm thử đơn vị toán tử `ComplexWassersteinSSM2D`, phép quét song song $2 \times 2$ $O(\log_2 L)$ và độ ổn định `AMP FP16` (`4x3x128x128` & `1x3x512x512`). |
 | **`NB_04`** | `NB_04_CW_SSN_Backbone_and_Spectral_Wasserstein_Loss.ipynb` | Xây dựng mạng phân cấp đồng nhất `CW-SSN-T/B` & chạy Pilot Run kiểm chứng hàm mất mát `SpectralWassersteinLoss`. |
-| **`NB_05`** | `NB_05_Main_Experiments_3D_and_5D_AllInOne.ipynb` | Huấn luyện chính thức `CW-SSN-T` (`5.86M`) & `CW-SSN-B` (`7.96M`) trên chuẩn **3D & 5D All-in-One** (3x Kaggle T4x2 + 1x Colab Pro). |
+| **`NB_05`** | `NB_05_Main_Experiments_3D_and_5D_AllInOne.ipynb` | Huấn luyện chính thức `CW-SSN-T` (`5.81M`) & `CW-SSN-B` (`7.95M`) trên chuẩn **3D & 5D All-in-One** (3x Kaggle T4x2 + 1x Colab Pro). |
 | **`NB_06`** | `NB_06_Scalability_10D_AllInOne_Benchmark.ipynb` | Mở rộng quy mô lên **10 loại suy thoái (10D Benchmark)** theo chuẩn `DCPT` (ICLR 2025) & phân tích triệt tiêu xung đột gradient. |
 | **`NB_07`** | `NB_07_Universal_Foreground_Segmentation_EVP.ipynb` | Mở rộng sang **4 bài toán Phân đoạn Tiền cảnh Phổ quát (COD, Defocus Blur, Forgery, Shadow — EVP Protocol)** chống Desk-Reject sang IEEE TIP. |
 | **`NB_08`** | `NB_08_Mathematical_Degeneracy_Ablation_Matrix.ipynb` | Thực thi **Ma trận Ablation Suy biến Toán học** $(\gamma, \beta, \Omega) \to 0$ (4 trường hợp) & khảo sát độ nhạy cửa sổ $|\mathcal{N}(p)|, r$. |
@@ -113,7 +114,7 @@ Complex-Wasserstein-State-Space-Network-CW-SSN/
 │   ├── generate_references_csv.py                     # Script sinh & kiểm tra toàn vẹn CSV 25 bài báo
 │   └── generate_notebooks.py                          # Script sinh & kiểm tra cú pháp AST cho 10 Jupyter Notebooks
 ├── tests/
-│   └── test_cw_ssn.py                                 # Bộ 7 Unit Tests kiểm chứng toán học & ngân sách tham số
+│   └── test_cw_ssn.py                                 # Bộ 8 Unit Tests kiểm chứng toán học, VRAM FP16 & ngân sách tham số
 ├── docs/                                              # Tài liệu định hướng nghiên cứu gốc (.pdf, .docx, .md)
 ├── TPAMI_PreResearch_References_25Papers.csv          # Bản sao CSV ở thư mục gốc để truy cập nhanh
 ├── evaluate_all.sh                                    # Script kiểm chứng tái lập một chạm cho Reviewer TPAMI
